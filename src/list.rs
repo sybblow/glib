@@ -192,3 +192,70 @@ impl<T> GlibContainer<*mut ffi::C_GList> for List<T> {
         self.pointer
     }
 }
+
+#[cfg(test)]
+mod bench{
+    use super::List;
+    extern crate test;
+    use self::test::Bencher;
+
+    #[bench]
+    fn bench_collect_into(b: &mut test::Bencher) {
+        let v: &[i32] = &[0; 128];
+        b.iter(|| {
+            List::from_slice(v);
+        })
+    }
+
+    #[bench]
+    fn bench_prepend(b: &mut test::Bencher) {
+        let v: &[i32] = &[0; 128];
+        let mut m: List<i32> = List::from_slice(v);
+        b.iter(|| {
+            m.prepend(0);
+        })
+    }
+
+    #[bench]
+    fn bench_prepend_empty(b: &mut test::Bencher) {
+        let mut m: List<i32> = List::new();
+        b.iter(|| {
+            m.prepend(0);
+        })
+    }
+
+    #[bench]
+    fn bench_append(b: &mut test::Bencher) {
+        let v: &[i32] = &[0; 128];
+        let mut m: List<i32> = List::from_slice(v);
+        b.iter(|| {
+            m.append(0);
+        })
+    }
+
+    #[bench]
+    fn bench_append_empty(b: &mut test::Bencher) {
+        let mut m: List<i32> = List::new();
+        b.iter(|| {
+            m.append(0);
+        })
+    }
+
+    #[bench]
+    fn bench_iter(b: &mut test::Bencher) {
+        let v: &[i32] = &[0; 128];
+        let m: List<i32> = List::from_slice(v);
+        b.iter(|| {
+            assert!(m.iter().count() == 128);
+        })
+    }
+    #[bench]
+    fn bench_iter_rev(b: &mut test::Bencher) {
+        let v: &[i32] = &[0; 128];
+        let m: List<i32> = List::from_slice(v);
+        b.iter(|| {
+            assert!(m.rev_iter().count() == 128);
+        })
+    }
+
+}
